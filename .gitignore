@@ -1,0 +1,4 @@
+config.toml
+__pycache__
+.vscode
+.DS_Store

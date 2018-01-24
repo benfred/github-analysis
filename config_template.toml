@@ -1,0 +1,12 @@
+githubarchivepath = "/path/to/store/githubarchive"
+ghtorrentpath = "/path/to/find/ghtorrent"
+
+[Database]
+host = "localhost"
+username = "dbusername"
+password = "dbpassword"
+dbname = "github"
+
+[[githubcredentials]]
+account = "placeholder_for_debugging"
+token = "github api token"
