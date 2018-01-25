@@ -218,6 +218,7 @@ def generate_readme(data, count=25,
     # languages
     data = [d for d in data if d[0] not in {'CSS', 'TeX', 'HTML', 'XML', 'Makefile', 'CMake', 'Vue',
                                             'Vim', 'VimL', 'Vim script', 'Emacs', 'Emacs Lisp',
+                                            "HCL", "PLpgSQL", "QML", "Nginx", "PLSQL",
                                             'Arduino', 'Visual', 'Batchfile', 'XSLT'}]
 
     Language = namedtuple("Langage", ['language', 'order', 'mau', 'trendfile', 'rank'])
@@ -236,7 +237,7 @@ def generate_readme(data, count=25,
                                   y[-1],
                                   "%.2f%%" % (now * 100),
                                   pathname2url(url_filename), rank+1))
-        print(rank, language, 100 * y[-1])
+        print("%d\t%s\t%0.04f" % (rank + 1, language, 100 * y[-1]))
     COLOUR_MAP['MAU'] = COLOURS[0]
 
     generated_at = datetime.datetime.now().strftime("%B %d %Y")
