@@ -25,7 +25,7 @@ echo "Looking up repoid for GHTorrent data"
 find -name parsed_events.tsv | xargs awk -F $'\t' '{print $3 "\t" $2}' | sort -u -S 80% | grep -v '\-1$' > repoids.tsv
 
 # get repoid/reponame/language from ghtorrents, by joining with the repoids.tsv
-join -t $'\t' -1 1 -2 1 -o o2.2,1.1,1.2 ghtorrents_reponame_language.tsv repoids.tsv | sort -S 80% > ghtorrent_languages.tsv
+join -t $'\t' -1 1 -2 1 -o 2.2,1.1,1.2 ghtorrents_reponame_language.tsv repoids.tsv | sort -S 80% > ghtorrent_languages.tsv
 
 # Join languages from Postgres with Languages from GHTorrent in a single file, preferring our own scraped data if has both
 echo "Merging languages from Postgres DB and GHTorrent"
