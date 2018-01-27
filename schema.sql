@@ -35,5 +35,17 @@ CREATE TABLE users
   statuscode integer
 );
 
+CREATE TABLE locations
+(
+  location text PRIMARY KEY,
+  fetched timestamp without time zone,
+  data jsonb,
+  city text,
+  state text,
+  country text
+);
+
+
+
 CREATE INDEX repos_name_index ON repos (name);
 CREATE INDEX users_login_index ON users(login);

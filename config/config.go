@@ -11,6 +11,7 @@ type Config struct {
 	GithubarchivePath string
 	Database          Database
 	GitHubCredentials []GitHubCredentials
+	GoogleMapsKey     string
 }
 
 // Database defines the login credentials for the metadata in the db

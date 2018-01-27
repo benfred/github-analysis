@@ -15,7 +15,7 @@ fi
 export LC_COLLATE=C
 
 # print out the repoid/reponame/username from each event (assuming repoid is given)
-find -name parsed_events.tsv $1 | xargs awk -F $'\t' '{if ($2 != "-1") print $2 "\t" $3 "\t" $6}' | 
+find $1 -name parsed_events.tsv | xargs awk -F $'\t' '{if ($2 != "-1") print $2 "\t" $3 "\t" $6}' | 
     # sort and deduplicate these triples
     sort -u -S 60% | 
     # extract just the repoid/reponame
