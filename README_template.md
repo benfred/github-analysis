@@ -44,12 +44,13 @@ language as the repo they are forking)
 
 | Source         |  Repo Count   |
 | -------------  |:-------------:|
-| GHTorrent      | 40M           |
-| scraper        | 21M           |
+| GHTorrent      | 42.8M         |
+| scraper        | 22.5M         |
 | GitHub-Archive | 13.5M         |
 | forks          | 37M           |
 
-There is significant overlap between all these sources of information, but once aggregated and deduplicated there we ended up with language information for 60 Million repos. This includes every repo that has had more than 1 user interact with it and all repos with only 1 user that have more than 5 total events ever.
+There is significant overlap between all these sources of information, but once aggregated and
+deduplicated there we ended up with language information for 62.8 Million repos. This includes every repo that has had more than 1 user interact with it and all repos with only 1 user that have more than 5 total events ever.
 I'm still crawling the remaining repos.
 
 ### Inferring the Date
