@@ -1,0 +1,34 @@
+{
+  "name": "devmap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benfred/github-analysis.git"
+  },
+  "author": "Ben Frederickson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/benfred/github-analysis/issues"
+  },
+  "homepage": "https://github.com/benfred/github-analysis#readme",
+  "dependencies": {
+    "regression": "^2.0.1",
+    "slideyslider": "^1.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^14.5.0",
+    "tsify": "^3.0.4",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2",
+    "uglify-js": "^3.3.16",
+    "watchify": "^3.9.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "bundle": "browserify src/index.ts -p tsify -s devmap  | uglifyjs -m -c warnings=false > bundle.js",
+    "watch": "watchify src/index.ts -p tsify -s devmap  --debug -o bundle.js -v"
+  }
+}
