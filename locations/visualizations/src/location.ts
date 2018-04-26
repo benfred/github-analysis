@@ -27,9 +27,6 @@ export interface ILocation {
 }
 
 export function calculateRanks(data: ILocation[]): ILocation[] {
-    // don't rank countries like Gibraltar herer
-    data = data.filter((x) => x.population > 100000);
-
     data.forEach((d) => d.ranks = {});
     for (const r in rankLabels) {
         if (rankLabels.hasOwnProperty(r)) {
