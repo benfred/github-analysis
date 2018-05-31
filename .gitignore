@@ -2,3 +2,5 @@ config.toml
 __pycache__
 .vscode
 .DS_Store
+locations/visualizations/bundle.js
+locations/visualizations/node_modules/
