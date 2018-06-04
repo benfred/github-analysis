@@ -254,7 +254,7 @@ func importJSONFiles(ctx context.Context, db *githubanalysis.Database, pathname 
 }
 
 func queueRepos(ctx context.Context, db *githubanalysis.Database,
-	filename string, repos chan fetchRequest) error {
+	filename string, repos chan fetchRequest, refetch bool) error {
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -280,15 +280,16 @@ func queueRepos(ctx context.Context, db *githubanalysis.Database,
 			if err != nil {
 				return err
 			}
+			if !refetch {
+				hasrepo, err := db.HasRepo(repoid)
+				if err != nil {
+					fmt.Printf("Failed to query repo status '%s': %s", tokens[2], err.Error())
+				}
 
-			hasrepo, err := db.HasRepo(repoid)
-			if err != nil {
-				fmt.Printf("Failed to query repo status '%s': %s", tokens[2], err.Error())
-			}
-
-			if hasrepo {
-				// fmt.Printf("Skipping %s\n", tokens[2])
-				continue
+				if hasrepo {
+					// fmt.Printf("Skipping %s\n", tokens[2])
+					continue
+				}
 			}
 
 			select {
@@ -304,6 +305,7 @@ func queueRepos(ctx context.Context, db *githubanalysis.Database,
 
 func main() {
 	importjson := flag.Bool("importjson", false, "re-insert json data")
+	refetch := flag.Bool("refetch", false, "Refetch repos that already exist in the database")
 	jsonpath := flag.String("jsonpath", "", "location of json files")
 	filename := flag.String("filename", "", "Filename to process")
 	flag.Parse()
@@ -351,7 +353,7 @@ func main() {
 	outputWG.Add(1)
 	go writeRepo(ctx, &outputWG, output, db, *jsonpath)
 
-	err = queueRepos(ctx, db, *filename, repos)
+	err = queueRepos(ctx, db, *filename, repos, *refetch)
 	if err != nil {
 		panic(err)
 	}

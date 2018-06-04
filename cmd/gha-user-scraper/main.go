@@ -190,7 +190,7 @@ Loop:
 }
 
 func queueUsers(ctx context.Context, db *githubanalysis.Database,
-	filename string, requests chan fetchRequest) error {
+	filename string, requests chan fetchRequest, refetch bool) error {
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -216,14 +216,16 @@ func queueUsers(ctx context.Context, db *githubanalysis.Database,
 			if err != nil {
 				return err
 			}
-			hasuser, err := db.HasUser(userid)
-			if err != nil {
-				fmt.Printf("Failed to query user status '%s': %s", tokens[2], err.Error())
-			}
+			if !refetch {
+				hasuser, err := db.HasUser(userid)
+				if err != nil {
+					fmt.Printf("Failed to query user status '%s': %s", tokens[2], err.Error())
+				}
 
-			if hasuser {
-				// fmt.Printf("Skipping %s\n", tokens[2])
-				continue
+				if hasuser {
+					// fmt.Printf("Skipping %s\n", tokens[2])
+					continue
+				}
 			}
 			select {
 			case <-ctx.Done():
@@ -239,6 +241,7 @@ func queueUsers(ctx context.Context, db *githubanalysis.Database,
 func main() {
 	jsonpath := flag.String("jsonpath", "", "location of json files")
 	filename := flag.String("filename", "", "Filename to process")
+	refetch := flag.Bool("refetch", false, "Refetch users that have already been stored in the database")
 	flag.Parse()
 	if *filename == "" && *jsonpath == "" {
 		flag.Usage()
@@ -276,7 +279,7 @@ func main() {
 	outputWG.Add(1)
 	go writeUsers(ctx, &outputWG, output, db, *jsonpath)
 
-	err = queueUsers(ctx, db, *filename, requests)
+	err = queueUsers(ctx, db, *filename, requests, *refetch)
 	if err != nil {
 		panic(err)
 	}
