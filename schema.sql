@@ -4,6 +4,8 @@ CREATE TABLE repos
   name varchar(200) NOT NULL,
   language varchar(50),
   description text,
+  license text,
+  homepage text,
   size integer NOT NULL default 0,
   stars integer NOT NULL default 0,
   forks integer NOT NULL default 0,
@@ -26,6 +28,7 @@ CREATE TABLE users
   location text,
   bio text,
   email text,
+  blog text,
   type text,
   followers integer,
   following integer,
@@ -57,3 +60,9 @@ CREATE TABLE locations
 
 CREATE INDEX repos_name_index ON repos (name);
 CREATE INDEX users_login_index ON users(login);
+
+/* migrations: TODO: proper up/down
+alter table repos add column license text;
+alter table repos add column homepage text;
+alter table users add column blog text;
+*/

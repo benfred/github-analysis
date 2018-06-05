@@ -51,11 +51,11 @@ func (conn *Database) InsertUserStatus(id int64, login string, statuscode int, f
 // InsertUser inserts a github.User object into the database
 func (conn *Database) InsertUser(statuscode *int, fetchtime *time.Time, user *github.User, upsert bool) error {
 	sql := `INSERT INTO users (id, login, name, company, location, bio, email, type, followers, following,
-		   created, modified, fetched, statuscode)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) `
+		   created, modified, fetched, statuscode, blog)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) `
 	if upsert {
 		sql += `ON CONFLICT(id) DO UPDATE SET login=$2, name=$3, company=$4, location=$5, bio=$6, email=$7, type=$8,
-				 followers=$9, following=$10, created=$11, modified=$12, fetched=$13, statuscode=$14`
+				 followers=$9, following=$10, created=$11, modified=$12, fetched=$13, statuscode=$14, blog=$15`
 	} else {
 		sql += `ON CONFLICT(id) DO NOTHING`
 	}
@@ -83,7 +83,8 @@ func (conn *Database) InsertUser(statuscode *int, fetchtime *time.Time, user *gi
 		created,
 		modified,
 		fetchtime,
-		statuscode)
+		statuscode,
+		user.Blog)
 	return err
 }
 
@@ -105,12 +106,12 @@ func (conn *Database) InsertRepoStatus(repoid int64, reponame string, statuscode
 // InsertRepo inserts a github.Repository object into the database
 func (conn *Database) InsertRepo(statuscode *int, fetchtime *time.Time, repo *github.Repository, upsert bool) error {
 	sql := `INSERT INTO repos (id, name, language, description, size, stars, forks, topics, parentid,
-							   ownerid, created, modified, fetched, statuscode)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`
+							   ownerid, created, modified, fetched, statuscode, license, homepage)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`
 	if upsert {
 		sql += ` ON CONFLICT(id) DO UPDATE SET name=$2, language=$3, description=$4, size=$5, stars=$6,
 			    forks=$7, topics=$8, parentid=$9, ownerid=$10, created=$11, modified=$12, fetched=$13,
-			    statuscode=$14`
+			    statuscode=$14, license=$15, homepage=$16`
 	} else {
 		sql += ` ON CONFLICT(id) DO NOTHING`
 	}
@@ -159,7 +160,9 @@ func (conn *Database) InsertRepo(statuscode *int, fetchtime *time.Time, repo *gi
 		created,
 		modified,
 		fetchtime,
-		statuscode)
+		statuscode,
+		repo.GetLicense().GetKey(),
+		repo.GetHomepage())
 
 	if err != nil {
 		fmt.Printf("Failed to insert github repo: %s", err.Error())

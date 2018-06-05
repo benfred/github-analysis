@@ -179,11 +179,6 @@ func main() {
 	requests := make(chan fetchRequest, 100)
 	output := make(chan fetchResponse)
 
-	err = queueOrganizations(ctx, db, requests)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// create a goroutine per credential to handle making api requests
 	var wg sync.WaitGroup
 	for _, cred := range cfg.GitHubCredentials {
@@ -195,6 +190,11 @@ func main() {
 	var outputWG sync.WaitGroup
 	outputWG.Add(1)
 	go writeOrganizationMembers(ctx, &outputWG, output, db)
+
+	err = queueOrganizations(ctx, db, requests)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	close(requests)
 	wg.Wait()
