@@ -208,3 +208,27 @@ func (conn *Database) HasUser(userid int64) (bool, error) {
 
 	return false, nil
 }
+
+// InsertOrganizationMembers inserts or updates the list of public organization members in the database
+func (conn *Database) InsertOrganizationMembers(orgid int64, orgname string, members []*github.User, statuscode int, fetchtime time.Time, upsert bool) error {
+	// Insert a stub user if not already fetched for each user in the organization
+	// Note purposefully setting statuscode/fetched time to nil here to mark as not fetched
+	// and setting upsert flag to false to prevent overwriting good data
+	var memberids []int
+	for _, user := range members {
+		memberids = append(memberids, *user.ID)
+		conn.InsertUser(nil, nil, user, false)
+	}
+
+	fmt.Printf("Writing: %s - %d members\n", orgname, len(memberids))
+
+	sql := `INSERT INTO organization_members (organization, members, fetched, statuscode) VALUES ($1, $2, $3, $4)`
+	if upsert {
+		sql += ` ON CONFLICT(organization) DO UPDATE SET members=$2, fetched=$3, statuscode=$4`
+	} else {
+		sql += ` ON CONFLICT(id) DO NOTHING`
+	}
+
+	_, err := conn.Exec(sql, orgid, pq.Array(memberids), fetchtime, statuscode)
+	return err
+}

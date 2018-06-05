@@ -35,6 +35,14 @@ CREATE TABLE users
   statuscode integer
 );
 
+CREATE TABLE organization_members
+(
+  organization integer PRIMARY KEY,
+  members integer[],
+  fetched timestamp without time zone,
+  statuscode integer
+);
+
 CREATE TABLE locations
 (
   location text PRIMARY KEY,
