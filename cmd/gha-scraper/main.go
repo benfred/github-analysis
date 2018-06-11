@@ -62,13 +62,13 @@ Loop:
 			if repo.repo == nil {
 				// If we dont' have a github.Repository object, probably failed to fetch
 				// update DB with the statuscode in that case
-				db.InsertRepoStatus(repo.repoid, repo.reponame, repo.statusCode, time)
+				db.InsertRepoStatus(repo.repoid, repo.reponame, repo.statusCode, time, true)
 			} else {
 				if repo.repoid != int64(repo.repo.GetID()) {
 					// If github returned a different repoid than the one we expected for this
 					// name, that means that the repoid has been deleted/replaced with a different
 					// one of the same name. Update DB so we don't try scraping again
-					db.InsertRepoStatus(repo.repoid, repo.reponame, 404, time)
+					db.InsertRepoStatus(repo.repoid, repo.reponame, 404, time, false)
 				}
 
 				db.InsertRepo(&repo.statusCode, &time, repo.repo, true)

@@ -90,9 +90,15 @@ func (conn *Database) InsertUser(statuscode *int, fetchtime *time.Time, user *gi
 
 // InsertRepoStatus updates the statuscode/fetchtime associated with a repo in the case that it
 // can't be fetched
-func (conn *Database) InsertRepoStatus(repoid int64, reponame string, statuscode int, fetchtime time.Time) error {
-	sql := `INSERT INTO repos (id, name, fetched, statuscode) VALUES ($1, $2, $3, $4)
-		ON CONFLICT(id) DO UPDATE SET name=$2, fetched=$3, statuscode=$4`
+func (conn *Database) InsertRepoStatus(repoid int64, reponame string, statuscode int, fetchtime time.Time, upsert bool) error {
+	sql := `INSERT INTO repos (id, name, fetched, statuscode) VALUES ($1, $2, $3, $4)`
+
+	if upsert {
+		sql += ` ON CONFLICT(id) DO UPDATE SET name=$2, fetched=$3, statuscode=$4`
+	} else {
+		sql += ` ON CONFLICT(id) DO NOTHING`
+	}
+
 	stmt, err := conn.Prepare(sql)
 	if err != nil {
 		fmt.Printf("Failed to prepare: %s\n", err.Error())
