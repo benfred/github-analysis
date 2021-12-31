@@ -16,6 +16,7 @@ type Event struct {
 	UserName     string
 	ForkID       int64
 	ForkName     string
+	CreatedAt    string
 }
 
 func repoFromURL(url string) string {
@@ -38,6 +39,8 @@ func ParseEvent(data []byte) *Event {
 	// different JSON formats
 	// TODO: jsonparser.EachKey api might be faster?
 	eventType, _ := jsonparser.GetString(data, "type")
+
+	created_at, _ := jsonparser.GetString(data, "created_at")
 
 	repo, err := jsonparser.GetString(data, "repo", "name")
 	if err != nil {
@@ -78,7 +81,7 @@ func ParseEvent(data []byte) *Event {
 	}
 
 	return &Event{Type: eventType, RepoName: repo, RepoID: repoID, RepoLanguage: language,
-		UserName: user, UserID: userID}
+		UserName: user, UserID: userID, CreatedAt: created_at}
 }
 
 // ParseForkEvent returns the forked repo name and forked repo id from a JSON githubarchive event

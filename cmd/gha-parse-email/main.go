@@ -20,7 +20,6 @@ type commitAuthor struct {
 	name  string
 }
 
-
 // ParsePushCommits returns a list of author/email if the
 func parsePushCommits(data []byte) ([]*commitAuthor, error) {
 	var authors []*commitAuthor
