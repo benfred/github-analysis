@@ -77,7 +77,7 @@ func fetchLocations(conn *githubanalysis.Database, client *maps.Client) error {
 
 	defer rows.Close()
 
-        errs := 0
+	errs := 0
 
 	for rows.Next() {
 		var location string
@@ -96,11 +96,11 @@ func fetchLocations(conn *githubanalysis.Database, client *maps.Client) error {
 		fmt.Printf("Location %s Count %d\n", location, count)
 		err = fetchLocation(client, conn, location)
 		if err != nil {
-                        errs += 1;
-                        if (errs >= 500) {
-			    return err
-                        }
-                }
+			errs += 1
+			if errs >= 500 {
+				return err
+			}
+		}
 	}
 	return nil
 }
